@@ -185,16 +185,7 @@
         <option>Select county first</option>
       </select>
     </div>
-    <div id="town-card" style="display:none" class="town-card">
-      <div class="tc-name"   id="card-name">—</div>
-      <div class="tc-county" id="card-county">—</div>
-      <div class="tc-stats">
-        <div class="tc-stat"><div class="n" id="card-total">—</div><div class="l">Sections</div></div>
-        <div class="tc-stat"><div class="n" id="card-flood">—</div><div class="l">Flood</div></div>
-        <div class="tc-stat"><div class="n" id="card-pages">—</div><div class="l">Pages</div></div>
-        <div class="tc-stat"><div class="n" id="card-toc">—</div><div class="l">TOC</div></div>
-      </div>
-    </div>
+
   </aside>
 
   <main id="main-content">
@@ -358,13 +349,6 @@ function renderTown(data) {
   const toc      = sections.filter(s => s.is_toc_entry === true);
 
   // Update sidebar card
-  document.getElementById("town-card").style.display = "block";
-  document.getElementById("card-name").textContent   = data.town   || "—";
-  document.getElementById("card-county").textContent = data.county || "—";
-  document.getElementById("card-total").textContent  = sections.length;
-  document.getElementById("card-flood").textContent  = flood.length;
-  document.getElementById("card-pages").textContent  = data.total_pages || "—";
-  document.getElementById("card-toc").textContent    = toc.length;
 
   // Sort by section ref
   flood.sort((a,b) => {
