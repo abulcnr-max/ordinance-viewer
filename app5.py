@@ -162,7 +162,7 @@ st.markdown("""
 
 # ── Config ──
 # Paste your Google Drive folder ID here
-GDRIVE_FOLDER_ID = "YOUR_FOLDER_ID_HERE"
+GDRIVE_FOLDER_ID = "https://drive.google.com/drive/u/1/folders/1aZ54i0JnvOXIh1n2_7Vv15g0WoM9CbFT"
 
 DEFAULT_COUNTY = "Atlantic County"
 DEFAULT_TOWN   = "Town of Hammonton"
