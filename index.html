@@ -229,7 +229,7 @@ window.addEventListener("DOMContentLoaded", loadIndex);
 async function loadIndex() {
   try {
     setProgress(20, "Loading town index...");
-    const url  = `https://drive.google.com/uc?export=download&id=${INDEX_FILE_ID}`;
+    const url  = `https://www.googleapis.com/drive/v3/files/${INDEX_FILE_ID}?alt=media&key=${API_KEY}`;
     const resp = await fetch(url);
     if (!resp.ok) throw new Error(`HTTP ${resp.status}`);
     const index = await resp.json();
@@ -341,7 +341,7 @@ async function onTownChange() {
     const fileId = fileIdMap[filename];
     if (!fileId) throw new Error(`File not found in Drive: ${filename}`);
 
-    const url  = `https://drive.google.com/uc?export=download&id=${fileId}`;
+    const url  = `https://www.googleapis.com/drive/v3/files/${fileId}?alt=media&key=${API_KEY}`;
     const resp = await fetch(url);
     if (!resp.ok) throw new Error(`HTTP ${resp.status}`);
     const data = await resp.json();
