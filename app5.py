@@ -11,6 +11,7 @@ import html
 import requests
 from pathlib import Path
 from collections import defaultdict
+import os
 
 st.set_page_config(
     page_title="NJ Flood Ordinance Viewer",
@@ -170,22 +171,46 @@ DEFAULT_TOWN   = "Town of Hammonton"
 
 def get_gdrive_files(folder_id):
     """
-    List all files in a public Google Drive folder.
-    Uses the simple export URL — no API key needed.
+    List all JSON files in a public Google Drive folder.
+    Handles pagination to get all files (not just first 1000).
     """
-    url = f"https://drive.google.com/drive/folders/{folder_id}"
-    # Use Google Drive API v3 public endpoint
-    api_url = (
-        f"https://www.googleapis.com/drive/v3/files"
-        f"?q='{folder_id}'+in+parents"
-        f"&fields=files(id,name)"
-        f"&pageSize=1000"
-        f"&key={st.secrets.get('GDRIVE_API_KEY', '')}"
-    )
-    resp = requests.get(api_url, timeout=30)
-    if resp.status_code != 200:
+    try:
+        api_key = st.secrets["GDRIVE_API_KEY"]
+    except Exception:
+        api_key = os.getenv("GDRIVE_API_KEY", "")
+
+    if not api_key:
+        st.error("GDRIVE_API_KEY not found in secrets.")
         return []
-    return resp.json().get("files", [])
+
+    all_files  = []
+    page_token = None
+
+    while True:
+        url = (
+            f"https://www.googleapis.com/drive/v3/files"
+            f"?q=%27{folder_id}%27+in+parents"
+            f"&fields=nextPageToken,files(id,name)"
+            f"&pageSize=1000"
+            f"&key={api_key}"
+        )
+        if page_token:
+            url += f"&pageToken={page_token}"
+
+        resp = requests.get(url, timeout=30)
+
+        if resp.status_code != 200:
+            st.error(f"Drive API error {resp.status_code}: {resp.text[:200]}")
+            return []
+
+        data       = resp.json()
+        all_files += data.get("files", [])
+        page_token = data.get("nextPageToken")
+
+        if not page_token:
+            break
+
+    return [f for f in all_files if f["name"].endswith(".json")]
 
 
 def download_json_file(file_id):
